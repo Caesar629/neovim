@@ -15,11 +15,12 @@ return {
       },
     }
 
-    require('mason-lspconfig').setup {}
-    require('mason-tool-installer').setup {
+    require('mason-lspconfig').setup({
+      --add language
       ensure_installed = {
-        'lua-language-server',
-      },
-    }
+        "lua_ls",
+        "clangd",
+      }
+    })
   end,
 }

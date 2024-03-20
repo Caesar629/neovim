@@ -8,8 +8,10 @@ keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
 -- ---------- 正常模式 ---------- ---
 -- 窗口
-keymap.set("n", "<leader>sv", "<C-w>v") -- 水平新增窗口 
+keymap.set("n", "<leader>sv", "<C-w>v") -- 水平新增窗口
 keymap.set("n", "<leader>sh", "<C-w>s") -- 垂直新增窗口
 
 -- 取消高亮
 keymap.set("n", "<leader>nh", ":nohl<CR>")
+-- 文件树
+keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>")
