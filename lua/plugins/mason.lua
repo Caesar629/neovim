@@ -19,7 +19,6 @@ return {
       --add language
       ensure_installed = {
         "lua_ls",
-        "clangd",
       }
     })
   end,
