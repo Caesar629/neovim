@@ -1,5 +1,16 @@
+-- local current_signature = function()
+-- 	if not pcall(require, 'lsp_signature') then return end
+-- 	local sig = require("lsp_signature").status_line(50)
+-- 	return sig.label .. "🐼" .. sig.hint
+-- end
+
 return {
-  'nvim-lualine/lualine.nvim',
+  -- "theniceboy/eleline.vim",
+  -- branch = "no-scrollbar",
+  "nvim-lualine/lualine.nvim",
+  -- You can optionally lazy-load heirline on UiEnter
+  -- to make sure all required plugins and colorschemes are loaded before setup
+  -- event = "UiEnter",
   config = function()
     require('lualine').setup {
       options = {
@@ -13,7 +24,7 @@ return {
         },
         ignore_focus = {},
         always_divide_middle = true,
-        globalstatus = false,
+        globalstatus = true,
         refresh = {
           statusline = 1000,
           tabline = 1000,
@@ -21,11 +32,11 @@ return {
         }
       },
       sections = {
-        lualine_a = { 'mode' },
+        lualine_a = { 'filename' },
         lualine_b = { 'branch', 'diff', 'diagnostics' },
-        lualine_c = { 'filename' },
-        lualine_x = { 'encoding', 'fileformat', 'filetype' },
-        lualine_y = { 'progress' },
+        lualine_c = {},
+        lualine_x = {},
+        lualine_y = { 'filesize', 'fileformat', 'filetype' },
         lualine_z = { 'location' }
       },
       inactive_sections = {
@@ -41,5 +52,5 @@ return {
       inactive_winbar = {},
       extensions = {}
     }
-  end,
+  end
 }
