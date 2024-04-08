@@ -14,6 +14,7 @@ return {
     }
     lspconfig.clangd.setup {}
     lspconfig.cmake.setup {}
+    lspconfig.bashls.setup {}
 
     vim.keymap.set('n', '<LEADER>=', vim.diagnostic.goto_next)
     vim.keymap.set('n', '<LEADER>-', vim.diagnostic.goto_prev)
