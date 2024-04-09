@@ -29,5 +29,33 @@ return {
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
       end,
     })
+
+    -- error lens
+    vim.fn.sign_define {
+      {
+        name = 'DiagnosticSignError',
+        text = '',
+        texthl = 'DiagnosticSignError',
+        linehl = 'ErrorLine',
+      },
+      {
+        name = 'DiagnosticSignWarn',
+        text = '',
+        texthl = 'DiagnosticSignWarn',
+        linehl = 'WarningLine',
+      },
+      {
+        name = 'DiagnosticSignInfo',
+        text = '',
+        texthl = 'DiagnosticSignInfo',
+        linehl = 'InfoLine',
+      },
+      {
+        name = 'DiagnosticSignHint',
+        text = '',
+        texthl = 'DiagnosticSignHint',
+        linehl = 'HintLine',
+      },
+    }
   end,
 }
