@@ -18,7 +18,7 @@ return {
               paste_behind = '<c-g>',
               replay = '<c-q>', -- replay a macro
               delete = '<c-d>', -- delete an entry
-              edit = '<c-k>', -- edit an entry
+              edit = '<c-k>',   -- edit an entry
               custom = {},
             },
           },
