@@ -30,8 +30,17 @@ return {
       return col == 0 or vim.fn.getline("."):sub(col, col):match "%s"
     end
 
-
+    local lspkind = require 'lspkind'
     cmp.setup({
+      completion = {
+        completeopt = 'menu,menuone,preview,noselect',
+      },
+      formatting = {
+        format = lspkind.cmp_format {
+          maxwidth = 50,
+          ellipsis_char = '...',
+        },
+      },
       snippet = {
         expand = function(args)
           require('luasnip').lsp_expand(args.body)
