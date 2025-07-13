@@ -16,9 +16,7 @@ return {
     lspconfig.cmake.setup {}
     lspconfig.bashls.setup {}
     lspconfig.pyright.setup {}
-    lspconfig.html.setup {}
-    lspconfig.cssls.setup {}
-    lspconfig.tsserver.setup {}
+
 
     vim.keymap.set('n', '<LEADER>=', vim.diagnostic.goto_next)
     vim.keymap.set('n', '<LEADER>-', vim.diagnostic.goto_prev)
