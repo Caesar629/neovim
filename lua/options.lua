@@ -32,4 +32,3 @@ opt.smartcase = true
 -- 外观
 opt.termguicolors = true
 opt.signcolumn = "yes"
-
