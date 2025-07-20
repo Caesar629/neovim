@@ -99,7 +99,7 @@ return {
       })
 
       --------------------------------------
-      -- LSP 通用附加配置（修复内联提示问题）
+      -- LSP 通用附加配置
       --------------------------------------
       local on_attach = function(client, bufnr)
         -- 禁用某些LSP的格式化
@@ -130,12 +130,12 @@ return {
           vim.lsp.buf.format({ async = true, timeout_ms = 2000 })
         end, '格式化文件')
 
-        -- 完全修复的内联提示（带类型检查和错误处理）
+        -- 内联提示（使用原生LSP实现）
         if client.supports_method('textDocument/inlayHint') then
           local ok, _ = pcall(function()
             if type(vim.lsp.inlay_hint) == 'table' and 
                type(vim.lsp.inlay_hint.enable) == 'function' then
-              vim.lsp.inlay_hint.enable(bufnr, true)  -- 确保传递布尔值
+              vim.lsp.inlay_hint.enable(bufnr, true)
             end
           end)
           if not ok then
@@ -146,10 +146,6 @@ return {
         -- clangd特殊处理
         if client.name == 'clangd' then
           map('n', '<leader>h', '<cmd>ClangdSwitchSourceHeader<cr>', '切换头文件')
-          if pcall(require, 'clangd_extensions') then
-            require('clangd_extensions.inlay_hints').setup_autocmd()
-            require('clangd_extensions.inlay_hints').set_inlay_hints()
-          end
         end
       end
 
@@ -183,21 +179,6 @@ return {
         }
       })
 
-      -- Clangd
-      require('lspconfig').clangd.setup({
-        on_attach = on_attach,
-        capabilities = capabilities,
-        cmd = {
-          "clangd",
-          "--background-index",
-          "--clang-tidy",
-          "--header-insertion=iwyu",
-          "--completion-style=detailed",
-          "--all-scopes-completion",
-          "--cross-file-rename"
-        }
-      })
-
       -- Python
       require('lspconfig').pyright.setup({
         on_attach = on_attach,
@@ -224,6 +205,15 @@ return {
           server = {
             on_attach = on_attach,
             capabilities = capabilities,
+            cmd = {
+              "clangd",
+              "--background-index",
+              "--clang-tidy",
+              "--header-insertion=iwyu",
+              "--completion-style=detailed",
+              "--all-scopes-completion",
+              "--cross-file-rename"
+            }
           },
           extensions = {
             inlay_hints = {
@@ -234,6 +224,21 @@ return {
               other_hints_prefix = " → ",
               highlight = "Comment"
             }
+          }
+        })
+      else
+        -- 如果clangd_extensions加载失败，回退到原生clangd配置
+        require('lspconfig').clangd.setup({
+          on_attach = on_attach,
+          capabilities = capabilities,
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+            "--header-insertion=iwyu",
+            "--completion-style=detailed",
+            "--all-scopes-completion",
+            "--cross-file-rename"
           }
         })
       end
