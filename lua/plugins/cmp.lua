@@ -1,28 +1,95 @@
--- ~/.config/nvim/lua/config/cmp.lua
-
 return {
   {
     'hrsh7th/nvim-cmp',
+    event = 'InsertEnter',
     dependencies = {
-      'hrsh7th/cmp-nvim-lsp',
+      -- 补全源
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
-      'saadparwaiz1/cmp_luasnip',
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-cmdline',
+
+      -- 代码片段
       'L3MON4D3/LuaSnip',
-      'rafamadriz/friendly-snippets',
+      'saadparwaiz1/cmp_luasnip',
+
+      -- 图标美化
+      'onsails/lspkind.nvim',
+
+      -- UI 增强
+      'lukas-reineke/cmp-under-comparator', -- 智能排序
     },
     config = function()
       local cmp = require('cmp')
+      local lspkind = require('lspkind')
       local luasnip = require('luasnip')
 
-      -- 加载 VS Code 风格的代码片段
-      require('luasnip.loaders.from_vscode').lazy_load()
+      -- 自定义图标样式
+      local kind_icons = {
+        Text = "",
+        Method = "",
+        Function = "",
+        Constructor = "",
+        Field = "",
+        Variable = "",
+        Class = "",
+        Interface = "",
+        Module = "",
+        Property = "",
+        Unit = "",
+        Value = "",
+        Enum = "",
+        Keyword = "",
+        Snippet = "",
+        Color = "",
+        File = "",
+        Reference = "",
+        Folder = "",
+        EnumMember = "",
+        Constant = "",
+        Struct = "",
+        Event = "",
+        Operator = "",
+        TypeParameter = "",
+      }
+
+      -- 补全菜单边框样式
+      local border_opts = {
+        border = "single", -- 可选: "single", "double", "rounded", "shadow", "none"
+        winhighlight = "Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
+      }
 
       cmp.setup({
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
           end,
+        },
+        window = {
+          completion = border_opts,
+          documentation = border_opts,
+        },
+        formatting = {
+          fields = { "kind", "abbr", "menu" },
+          format = lspkind.cmp_format({
+            mode = "symbol_text",
+            maxwidth = 50,
+            ellipsis_char = "...",
+            symbol_map = kind_icons, -- 注入自定义图标
+            menu = {
+              buffer = "[Buffer]",
+              nvim_lsp = "[LSP]",
+              luasnip = "[Snip]",
+              nvim_lua = "[Lua]",
+              path = "[Path]",
+              cmdline = "[Cmd]",
+            },
+            -- before = function(entry, vim_item)
+            --   -- 优先级调整（LSP 结果置顶）
+            --   vim_item.priority = cmp.get_score(entry)
+            --   return vim_item
+            -- end,
+          }),
         },
         mapping = cmp.mapping.preset.insert({
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -50,70 +117,24 @@ return {
           end, { 'i', 's' }),
         }),
         sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          {
-            name = 'buffer',
-            option = {
-              get_bufnrs = function()
-                return vim.api.nvim_list_bufs()
-              end
-            }
-          },
-          { name = 'path' },
+          { name = 'nvim_lsp', priority = 1000 },
+          { name = 'luasnip',  priority = 750 },
+          { name = 'buffer',   priority = 500 },
+          { name = 'path',     priority = 250 },
         }),
-        formatting = {
-          format = function(entry, vim_item)
-            -- 添加图标前缀
-            local icons = {
-              Text = "",
-              Method = "󰆧",
-              Function = "󰊕",
-              Constructor = "",
-              Field = "󰇽",
-              Variable = "󰂡",
-              Class = "󰠱",
-              Interface = "",
-              Module = "",
-              Property = "󰜢",
-              Unit = "",
-              Value = "󰎠",
-              Enum = "",
-              Keyword = "󰌋",
-              Snippet = "",
-              Color = "󰏘",
-              File = "󰈙",
-              Reference = "",
-              Folder = "󰉋",
-              EnumMember = "",
-              Constant = "󰏿",
-              Struct = "",
-              Event = "",
-              Operator = "󰆕",
-              TypeParameter = "󰅲",
-            }
-            vim_item.kind = string.format('%s %s', icons[vim_item.kind] or '', vim_item.kind)
-            vim_item.menu = ({
-              nvim_lsp = '[LSP]',
-              luasnip = '[Snippet]',
-              buffer = '[Buffer]',
-              path = '[Path]',
-            })[entry.source.name]
-            return vim_item
-          end,
+        experimental = {
+          ghost_text = {
+            hl_group = "Comment", -- 半透明预览文本
+          },
         },
       })
 
-      -- 为命令行添加补全
-      cmp.setup.cmdline(':', {
-        mapping = cmp.mapping.preset.cmdline(),
+      -- 增强排序（更智能的补全项排序）
+      cmp.setup.filetype({ "markdown", "help" }, {
         sources = cmp.config.sources({
-          { name = 'path' }
-        }, {
-          { name = 'cmdline' }
+          { name = "buffer" },
         })
       })
     end
   }
 }
-

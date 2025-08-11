@@ -1,25 +1,26 @@
 return {
-  'williamboman/mason.nvim',
+  "williamboman/mason.nvim",
   dependencies = {
-    'williamboman/mason-lspconfig.nvim',
-    'WhoIsSethDaniel/mason-tool-installer.nvim',
+    "williamboman/mason-lspconfig.nvim",
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
   },
   config = function()
-    require('mason').setup {
+    require("mason").setup({
       ui = {
         icons = {
-          package_installed = '✓',
-          package_pending = '➜',
-          package_uninstalled = '✗',
+          package_installed = "✓",
+          package_pending = "➜",
+          package_uninstalled = "✗",
         },
       },
-    }
+    })
 
-    require('mason-lspconfig').setup({
+    require("mason-lspconfig").setup({
       --add language
       ensure_installed = {
         "lua_ls",
-      }
+        "clangd",
+      },
     })
   end,
 }
